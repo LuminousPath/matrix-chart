@@ -603,7 +603,7 @@ database:
         database: "{{ .Values.postgresql.database }}"
         
         {{- if .Values.postgresql.enabled }}
-        host: "{{ include "matrix.fullname" . }}-postgresql"
+        host: "{{ .Release.Name }}-postgresql"
         port: "5432"
         {{- else }}
         host: "{{ .Values.postgresql.hostname }}"
