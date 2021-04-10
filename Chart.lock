@@ -5,5 +5,8 @@ dependencies:
 - name: smtp
   repository: https://charts.ntppool.org/
   version: 1.0.1
-digest: sha256:7b7962985529c1c335fbaaea4c1d1889db95d34d50fdf87332da0a92d055addf
-generated: "2021-04-11T01:41:19.5532236+09:00"
+- name: nginx
+  repository: https://charts.bitnami.com/bitnami
+  version: 8.8.0
+digest: sha256:645eb02cebdfc561356f34e8a8e0875c68d16c4ee816b9b28235bd7046a13418
+generated: "2021-04-11T01:43:45.6691222+09:00"

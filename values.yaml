@@ -242,6 +242,48 @@ ingress:
     nginx.ingress.kubernetes.io/configuration-snippet: |
       proxy_intercept_errors off;
 
+# This is a server for serving up the ".well-known/matrix/server" json
+nginx:
+  enabled: true
+  ## Custom server block to be added to NGINX configuration
+  ## PHP-FPM example server block:
+  ## serverBlock: |-
+  ##   server {
+  ##     listen 0.0.0.0:8080;
+  ##     root /app;
+  ##     location / {
+  ##       index index.html index.php;
+  ##     }
+  ##     location ~ \.php$ {
+  ##       fastcgi_pass phpfpm-server:9000;
+  ##       fastcgi_index index.php;
+  ##       include fastcgi.conf;
+  ##     }
+  ##   }
+  ##
+  serverBlock: |-
+    server {
+      listen 0.0.0.0:8080;
+      root /app;
+      location / {
+        add_header Content-Type application/json;
+        return 200 "{\"m.server\": \"matrix-fed.chart-example.local:443\"}"
+      }
+    }
+  image:
+    registry: docker.io
+    repository: bitnami/nginx
+    tag: 1.19.8-debian-10-r0
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  service:
+    port: 80
+    type: ClusterIP
+  ingress:
+    enabled: true
+    hostname: chart-example.local
+    path: /.well-known/matrix/server
+
 # PostgreSQL Database Configuration
 postgresql:
   # Whether to deploy the stable/postgresql chart with this chart. If disabled, make sure PostgreSQL is available at the hostname below and credentials are configured below

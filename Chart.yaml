@@ -38,3 +38,7 @@ dependencies:
     version: 1.0.1
     repository: https://charts.ntppool.org/
     condition: smtp.enabled
+  - name: nginx
+    version: 8.8.0
+    repository: https://charts.bitnami.com/bitnami
+    condition: nginx.enabled
