@@ -72,15 +72,6 @@ Coturn specific labels
 {{- end -}}
 
 {{/*
-Mail relay specific labels
-*/}}
-{{- define "matrix.mail.labels" -}}
-{{- range $key, $val := .Values.mail.relay.labels -}}
-{{ $key }}: {{ $val }}
-{{- end }}
-{{- end -}}
-
-{{/*
 Synapse hostname, derived from either the Values.matrix.hostname override or the Ingress definition
 */}}
 {{- define "matrix.hostname" -}}

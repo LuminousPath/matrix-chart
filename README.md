@@ -6,7 +6,7 @@ A Helm chart for deploying a Matrix homeserver stack in Kubernetes.
 
 - Latest version of Synapse
 - (Optional) Latest version of Riot Web
-- (Optional) Choice of lightweight Exim relay or external mail server for email notifications
+- (Optional) Choice of SMTP relay or external mail server for email notifications
 - (Optional) Coturn TURN server for VoIP calls
 - (Optional) PostgreSQL cluster via stable/postgresql chart
 - (Optional) [matrix-org/matrix-appservice-irc](https://github.com/matrix-org/matrix-appservice-irc) IRC bridge

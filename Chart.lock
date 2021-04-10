@@ -1,6 +1,9 @@
 dependencies:
 - name: postgresql
-  repository: https://kubernetes-charts.storage.googleapis.com
-  version: 8.0.0
-digest: sha256:54b8dbbf92f98a307a15de995f41897aa3ea3f3252b6f594d058530755b3dfa8
-generated: "2020-03-30T22:24:34.251333366-07:00"
+  repository: https://charts.bitnami.com/bitnami
+  version: 8.7.3
+- name: smtp
+  repository: https://charts.ntppool.org/
+  version: 1.0.1
+digest: sha256:7b7962985529c1c335fbaaea4c1d1889db95d34d50fdf87332da0a92d055addf
+generated: "2021-04-11T01:41:19.5532236+09:00"

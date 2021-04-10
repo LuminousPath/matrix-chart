@@ -447,7 +447,7 @@ coturn:
 # Settings for email notifications
 mail:
   # Set to false to disable all email notifications
-  # NOTE: If enabled, either enable the Exim relay or configure an external mail server below
+  # NOTE: If enabled, either enable the smtp relay or configure an external mail server below
   enabled: true
   # Name and email address for outgoing mail
   from: "Matrix <matrix@example.com>"
@@ -455,27 +455,6 @@ mail:
   # If the ingress is enabled, this is unnecessary.
   # If the ingress is disabled and this is left unspecified, emails will contain a link to https://app.element.io
   riotUrl: ""
-
-  # Exim relay
-  relay:
-    enabled: true
-    image:
-      repository: "devture/exim-relay"
-      tag: "4.93.1-r0"
-      pullPolicy: IfNotPresent
-    service:
-      type: ClusterIP
-      port: 25
-    replicaCount: 1
-    resources: {}
-    probes:
-      readiness: {}
-      startup: {}
-      liveness: {}
-    # Mail relay specific labels
-    labels:
-      component: mail
-
   
   # External mail server
   external:
@@ -684,6 +663,34 @@ bridges:
     # Some cloud providers may not allow the ReadWriteMany access mode. In that case, change this to ReadWriteOnce -AND-
     # set bridges.affinity (above) to true
     accessMode: ReadWriteMany
+
+smtp:
+  enabled: true
+  config:
+    DISABLE_IPV6: "1"
+    # SMARTHOST_ADDRESS: mail.example.com
+    # SMARTHOST_PORT: "587"
+    # SMARTHOST_USER: myuser
+    # SMARTHOST_PASSWORD: secret
+    # SMARTHOST_ALIASES: "*.example.com"
+  existingSecret: null
+  fullnameOverride: ""
+  image:
+    pullPolicy: IfNotPresent
+    repository: namshi/smtp
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 200m
+      memory: 50Mi
+    requests:
+      cpu: 10m
+      memory: 10Mi
+  service:
+    port: 25
+    type: ClusterIP
+  serviceAccount:
+    create: true
 
 imagePullSecrets: []
 nameOverride: ""

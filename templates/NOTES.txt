@@ -12,8 +12,8 @@ Installed components:
 {{- if .Values.coturn.enabled }}
  - Coturn ({{ .Values.coturn.image.repository }})
 {{- end }}
-{{- if .Values.mail.relay.enabled }}
- - Exim Relay ({{ .Values.mail.relay.image.repository }})
+{{- if .Values.smtp.enabled }}
+ - Smtp Relay ({{ .Values.smtp.image.repository }})
 {{- end }}
 {{- if .Values.bridges.irc.enabled }}
  - IRC Bridge ({{ .Values.bridges.irc.image.repository }})
