@@ -73,7 +73,7 @@ spec:
               servicePort: {{ .Values.synapse.service.federation.port }}
               {{- end }}
     {{- end }}
-    {{- if .Values.ingress.admin }}
+    {{- if .Values.admin.enabled }}
     - host: {{ .Values.ingress.hosts.admin }}
       http:
         paths:

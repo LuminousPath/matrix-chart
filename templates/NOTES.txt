@@ -24,6 +24,9 @@ Installed components:
 {{- if .Values.bridges.discord.enabled }}
  - Discord Bridge ({{ .Values.bridges.discord.image.repository }})
 {{- end }}
+{{- if .Values.admin.enabled }}
+ - Synapse Admin Page ({{ .Values.admin.image.repository }})
+{{- end}}
 
 Thank you for installing dacruz21/matrix-chart! If you have any questions or run into any issues, please file a GitHub issue or join us at #matrix-chart:typokign.com.
 
@@ -31,6 +34,9 @@ Thank you for installing dacruz21/matrix-chart! If you have any questions or run
 Your Synapse homeserver should soon be available at https://{{ .Values.ingress.hosts.synapse }}
 {{- if .Values.riot.enabled }}
 Your Element Web instance should soon be available at https://{{ .Values.ingress.hosts.riot }}
+{{- end }}
+{{- if .Values.admin.enabled }}
+Your Admin Web interface should soon be available at https://{{ .Values.ingress.hosts.admin }}
 {{- end }}
 {{- end }}
 
