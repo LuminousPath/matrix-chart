@@ -1820,9 +1820,9 @@ password_config:
 email:
   enable_notifs: {{ .Values.mail.enabled }}
   notif_from: {{ .Values.mail.from }}
-  {{- if .Values.mail.relay.enabled }}
-  smtp_host: {{ include "matrix.fullname" . }}-exim-relay
-  smtp_port: {{ .Values.mail.relay.service.port }}
+  {{- if .Values.smtp.enabled }}
+  smtp_host: {{ include "matrix.name" . }}-smtp
+  smtp_port: {{ .Values.smtp.service.port }}
   {{- else }}
   smtp_host: {{ .Values.mail.external.host }}
   smtp_port: {{ .Values.mail.external.port }}

@@ -1,0 +1,71 @@
+{{- if .Values.admin.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "matrix.fullname" . }}-admin
+  labels:
+{{ include "matrix.labels" . | indent 4 }}
+{{ include "matrix.element.labels" . | indent 4}}
+spec:
+  replicas: {{ .Values.admin.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "matrix.name" . }}-admin
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        # re-roll deployment on config change
+        checksum/admin-config: {{ include (print $.Template.BasePath "/admin/configmap.yaml") . | sha256sum }}
+      labels:
+        app.kubernetes.io/name: {{ include "matrix.name" . }}-admin
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: "admin"
+          image: "{{ .Values.admin.image.repository }}:{{ .Values.admin.image.tag }}"
+          imagePullPolicy: {{ .Values.admin.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            {{- if .Values.admin.probes.readiness }}
+            {{- toYaml .Values.admin.probes.readiness | nindent 12 }}
+            {{- end }}
+          startupProbe:
+            httpGet:
+              path: /
+              port: http
+            {{- if .Values.admin.probes.startup }}
+            {{- toYaml .Values.admin.probes.startup | nindent 12 }}
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            {{- if .Values.admin.probes.liveness }}
+            {{- toYaml .Values.admin.probes.liveness | nindent 12 }}
+            {{- end }}
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+          {{- with .Values.admin.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}

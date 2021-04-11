@@ -237,6 +237,7 @@ ingress:
     synapse: matrix.chart-example.local
     riot: element.chart-example.local
     federation: matrix-fed.chart-example.local
+    admin: admin.chart-example.local
   annotations:
     # This annotation is required for the Nginx ingress provider. You can remove it if you use a different ingress provider
     nginx.ingress.kubernetes.io/configuration-snippet: |
@@ -485,6 +486,29 @@ coturn:
   # Coturn specific labels
   labels:
     component: coturn
+
+# Settings for admin page
+admin:
+  enabled: false
+
+  # Element Kubernetes resource settings
+  image:
+    repository: "awesometechnologies/synapse-admin"
+    tag: 0.7.2
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+  replicaCount: 1
+  resources: {}
+  probes:
+    readiness: {}
+    startup: {}
+    liveness: {}
+
+  # Admin page specefic labels
+  labels:
+    component: element
 
 # Settings for email notifications
 mail:
