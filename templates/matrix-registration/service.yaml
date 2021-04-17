@@ -1,0 +1,19 @@
+{{- if .Values.registration.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "matrix.fullname" . }}-registration
+  labels:
+{{ include "matrix.labels" . | indent 4 }}
+{{ include "matrix.registration.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.registration.service.type }}
+  ports:
+    - port: {{ .Values.registration.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "matrix.name" . }}-registration
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

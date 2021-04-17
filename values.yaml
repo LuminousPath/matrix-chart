@@ -300,6 +300,26 @@ postgresql:
     runAsUser: 1000
     fsGroup: 1000
 
+registration:
+  enabled: false
+  image:
+    repository: "zeratax/matrix-registration"
+    tag: v0.9.1
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+  probes:
+    liveness:
+      timeoutSeconds: 5
+      periodSeconds: 10
+  data:
+    # Size of the PVC to allocate for the SQLite database
+    capacity: 512Mi
+    # Storage class (optional)
+    storageClass: ""
+  apiPassword: 'APIAdminPassword'
+
 # Synapse Kubernetes resource settings
 synapse:
   image:

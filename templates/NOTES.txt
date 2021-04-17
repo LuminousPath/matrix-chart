@@ -27,6 +27,9 @@ Installed components:
 {{- if .Values.admin.enabled }}
  - Synapse Admin Page ({{ .Values.admin.image.repository }})
 {{- end}}
+{{- if .Values.registration.enabled }}
+ - Matrix-Registration Web App ({{ .Values.registration.image.repository }})
+{{- end}}
 
 Thank you for installing dacruz21/matrix-chart! If you have any questions or run into any issues, please file a GitHub issue or join us at #matrix-chart:typokign.com.
 
@@ -36,7 +39,10 @@ Your Synapse homeserver should soon be available at https://{{ .Values.ingress.h
 Your Element Web instance should soon be available at https://{{ .Values.ingress.hosts.riot }}
 {{- end }}
 {{- if .Values.admin.enabled }}
-Your Admin Web interface should soon be available at https://{{ .Values.ingress.hosts.admin }}
+Your Admin Web interface should soon be available at https://{{ .Values.ingress.hosts.synapse }}/admin
+{{- end }}
+{{- if .Values.registration.enabled }}
+Your Registration Web interface should soon be available at https://{{ .Values.ingress.hosts.synapse }}/register
 {{- end }}
 {{- end }}
 

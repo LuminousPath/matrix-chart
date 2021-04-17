@@ -14,6 +14,7 @@ A Helm chart for deploying a Matrix homeserver stack in Kubernetes.
 - (Optional) [tulir/mautrix-whatsapp](https://github.com/tulir/mautrix-whatsapp) WhatsApp bridge
 - (Optional) [Half-Shot/matrix-appservice-discord](https://github.com/Half-Shot/matrix-appservice-discord) Discord bridge
 - (Optional) [Awesome-Technologies/synapse-admin](https://github.com/Awesome-Technologies/synapse-admin) Synapse Admin Page
+- (Optional) [ZerataX/matrix-registration](https://github.com/ZerataX/matrix-registration) registration invitation codes
 - Fully configurable via values.yaml
 - Ingress definition for federated Synapse and Riot
 

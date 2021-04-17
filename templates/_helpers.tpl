@@ -81,6 +81,15 @@ Matrix Admin specific labels
 {{- end -}}
 
 {{/*
+Matrix-Registration specific labels
+*/}}
+{{- define "matrix.registration.labels" -}}
+{{- range $key, $val := .Values.registration.labels -}}
+{{ $key }}: {{ $val }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Synapse hostname, derived from either the Values.matrix.hostname override or the Ingress definition
 */}}
 {{- define "matrix.hostname" -}}

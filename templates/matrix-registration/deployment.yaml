@@ -1,0 +1,63 @@
+{{- if .Values.registration.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "matrix.fullname" . }}-registration
+  labels:
+{{ include "matrix.labels" . | indent 4 }}
+{{ include "matrix.registration.labels" . | indent 4}}
+spec:
+  replicas: {{ .Values.registration.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "matrix.name" . }}-registration
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        # re-roll deployment on config change
+        checksum/registration-config: {{ include (print $.Template.BasePath "/matrix-registration/configmap.yaml") . | sha256sum }}
+      labels:
+        app.kubernetes.io/name: {{ include "matrix.name" . }}-registration
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: "matrix-registration"
+          image: "{{ .Values.registration.image.repository }}:{{ .Values.registration.image.tag }}"
+          imagePullPolicy: {{ .Values.registration.image.pullPolicy }}
+          args:
+            - --config-path=/data/config.yaml
+            - serve
+          ports:
+            - name: http
+              containerPort: 5000
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /data
+              name: registration-data
+            - mountPath: /data/config.yaml
+              name: registration-config
+              subPath: config.yaml
+          livenessProbe:
+            httpGet:
+              path: /register
+              port: http
+            {{- if .Values.registration.probes.liveness }}
+            {{- toYaml .Values.registration.probes.liveness | nindent 12 }}
+            {{- end }}
+          {{- with .Values.riot.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: registration-data
+          persistentVolumeClaim:
+            claimName: {{ include "matrix.fullname" . }}-registration-data
+        - name: registration-config
+          configMap:
+            name: {{ include "matrix.fullname" . }}-registration-config
+{{- end }}

@@ -101,4 +101,34 @@ spec:
               servicePort: {{ .Values.admin.service.port }}
               {{- end }}
     {{- end }}
+    {{- if .Values.registration.enabled }}
+    - host: {{ .Values.ingress.hosts.riot }}
+      http:
+        paths:
+          {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
+          - path: "/register"
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: "{{ include "matrix.fullname" .}}-registration"
+                port:
+                  number: {{ .Values.registration.service.port }}
+          - path: "/static"
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: "{{ include "matrix.fullname" .}}-registration"
+                port:
+                  number: {{ .Values.registration.service.port }}
+         {{- else }}
+          - path: "/register"
+            backend:
+              serviceName: "{{ include "matrix.fullname" .}}-registration"
+              servicePort: {{ .Values.registration.service.port }}
+          - path: "/static"
+            backend:
+              serviceName: "{{ include "matrix.fullname" .}}-registration"
+              servicePort: {{ .Values.registration.service.port }}
+         {{- end }}
+    {{- end }}
 {{- end }}
