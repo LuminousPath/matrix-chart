@@ -212,21 +212,6 @@ matrix:
     # The log level for the synapse server
     synapseLogLevel: WARNING
 
-# Persistent volumes configuration
-volumes:
-  # Uploaded attachments/multimedia
-  media:
-    # Capacity of the media persistent volume claim
-    capacity: 10Gi
-    # Storage class (optional)
-    storageClass: ""
-  signingKey:
-    # Capacity of the signing key PVC
-    # Note: 1Mi is more than enough, but some cloud providers set a minimum PVC size of 1Mi or 1Gi, adjust as necessary
-    capacity: 1Mi
-    # Storage class (optional)
-    storageClass: ""
-
 ingress:
   enabled: true
   # Whether to expose the federation API behind the Ingress
@@ -341,6 +326,12 @@ synapse:
     liveness:
       timeoutSeconds: 5
       periodSeconds: 10
+
+  persistence:
+    # Capacity of the data persistent volume claim
+    capacity: 10Gi
+    # Storage class (optional)
+    storageClass: ""
 
   # Labels to be appended to all Synapse resources
   labels:

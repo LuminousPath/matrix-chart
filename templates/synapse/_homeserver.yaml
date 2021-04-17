@@ -998,7 +998,7 @@ registrations_require_3pid:
 # If set, allows registration of standard or admin accounts by anyone who
 # has the shared secret, even if registration is otherwise disabled.
 #
-{{- if .Values.matrix.registration.sharedSecret }}
+{{- if or .Values.matrix.registration.sharedSecret .Values.registration.enabled }}
 registration_shared_secret: {{ .Values.matrix.registration.sharedSecret }}
 {{- end }}
 

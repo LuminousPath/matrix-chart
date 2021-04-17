@@ -53,8 +53,9 @@ spec:
           volumeMounts:
             - name: synapse-config
               mountPath: /data
-            - name: signing-key
+            - name: data
               mountPath: /data/keys
+              subPath: signing_key
       {{- end }} {{/* end if .Release.IsInstall */}}
       containers:
         - name: "synapse"
@@ -77,10 +78,12 @@ spec:
           volumeMounts:
             - name: synapse-config
               mountPath: /data
-            - name: signing-key
+            - name: data
               mountPath: /data/keys
-            - name: media-store
+              subPath: signing_key
+            - name: data
               mountPath: /data/media_store
+              subPath: media_store
             {{- if or .Values.bridges.whatsapp.enabled .Values.bridges.discord.enabled .Values.bridges.irc.enabled }}
             - name: bridges
               mountPath: /bridges
@@ -125,12 +128,9 @@ spec:
         - name: synapse-config
           configMap:
             name: {{ include "matrix.fullname" . }}-synapse-config
-        - name: signing-key
+        - name: data
           persistentVolumeClaim:
-            claimName: {{ include "matrix.fullname" . }}-signing-key
-        - name: media-store
-          persistentVolumeClaim:
-            claimName: {{ include "matrix.fullname" . }}-media-store
+            claimName: {{ include "matrix.fullname" . }}-data
         {{- if or .Values.bridges.whatsapp.enabled .Values.bridges.discord.enabled .Values.bridges.irc.enabled }}
         - name: bridges
           persistentVolumeClaim:

@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "matrix.fullname" . }}-signing-key
+  name: {{ include "matrix.fullname" . }}-data
   labels:
 {{ include "matrix.labels" . | indent 4}}
 {{ include "matrix.synapse.labels" . | indent 4}}
 spec:
-  {{- if .Values.volumes.signingKey.storageClass }}
-  storageClassName: {{ .Values.volumes.signingKey.storageClass }}
+  {{- if .Values.synapse.persistence.storageClass }}
+  storageClassName: {{ .Values.synapse.persistence.storageClass }}
   {{- end }}
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.volumes.signingKey.capacity }}
+      storage: {{ .Values.synapse.persistence.capacity }}
