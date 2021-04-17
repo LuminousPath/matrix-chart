@@ -72,6 +72,15 @@ Coturn specific labels
 {{- end -}}
 
 {{/*
+Matrix Admin specific labels
+*/}}
+{{- define "matrix.admin.labels" -}}
+{{- range $key, $val := .Values.admin.labels -}}
+{{ $key }}: {{ $val }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Synapse hostname, derived from either the Values.matrix.hostname override or the Ingress definition
 */}}
 {{- define "matrix.hostname" -}}

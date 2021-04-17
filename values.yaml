@@ -237,7 +237,6 @@ ingress:
     synapse: matrix.chart-example.local
     riot: element.chart-example.local
     federation: matrix-fed.chart-example.local
-    admin: admin.chart-example.local
   annotations:
     # This annotation is required for the Nginx ingress provider. You can remove it if you use a different ingress provider
     nginx.ingress.kubernetes.io/configuration-snippet: |
@@ -498,7 +497,7 @@ admin:
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
-    port: 80
+    port: 5080
   replicaCount: 1
   resources: {}
   probes:
@@ -508,7 +507,17 @@ admin:
 
   # Admin page specefic labels
   labels:
-    component: element
+    component: admin
+
+  ingress:
+    enabled: true
+    tls: []
+    annotations:
+      # This annotation is required for the Nginx ingress provider. You can remove it if you use a different ingress provider
+      nginx.ingress.kubernetes.io/configuration-snippet: |
+        proxy_intercept_errors off;
+
+
 
 # Settings for email notifications
 mail:

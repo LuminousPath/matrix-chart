@@ -5,7 +5,7 @@ metadata:
   name: {{ include "matrix.fullname" . }}-admin
   labels:
 {{ include "matrix.labels" . | indent 4 }}
-{{ include "matrix.element.labels" . | indent 4}}
+{{ include "matrix.admin.labels" . | indent 4}}
 spec:
   podSelector:
     matchLabels:

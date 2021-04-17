@@ -22,35 +22,31 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
       containers:
         - name: "admin"
           image: "{{ .Values.admin.image.repository }}:{{ .Values.admin.image.tag }}"
           imagePullPolicy: {{ .Values.admin.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 5080
               protocol: TCP
           readinessProbe:
             httpGet:
-              path: /
+              path: /admin
               port: http
             {{- if .Values.admin.probes.readiness }}
             {{- toYaml .Values.admin.probes.readiness | nindent 12 }}
             {{- end }}
           startupProbe:
             httpGet:
-              path: /
+              path: /admin
               port: http
             {{- if .Values.admin.probes.startup }}
             {{- toYaml .Values.admin.probes.startup | nindent 12 }}
             {{- end }}
           livenessProbe:
             httpGet:
-              path: /
+              path: /admin
               port: http
             {{- if .Values.admin.probes.liveness }}
             {{- toYaml .Values.admin.probes.liveness | nindent 12 }}
@@ -59,10 +55,39 @@ spec:
             capabilities:
               drop:
                 - ALL
-            readOnlyRootFilesystem: true
+              add:
+                - NET_BIND_SERVICE
+                - CHOWN
+                - SETGID
+                - SETUID
             allowPrivilegeEscalation: false
           {{- with .Values.admin.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          volumeMounts:
+          - mountPath: /var/cache/nginx
+            name: ephemeral
+            subPath: cache
+          - mountPath: /var/run/pid
+            name: ephemeral
+            subPath: pid
+          - mountPath: /app/manifest.json
+            name: admin-config
+            subPath: manifest.json
+            readOnly: true
+          - mountPath: /etc/nginx/conf.d/default.conf
+            name: admin-config
+            subPath: default.conf
+            readOnly: true
+          - mountPath: /etc/nginx/nginx.conf
+            name: admin-config
+            subPath: nginx.conf
+            readOnly: true
+      volumes:
+      - name: ephemeral
+        emptyDir: {}
+      - name: admin-config
+        configMap:
+          name: {{ include "matrix.fullname" . }}-admin-config
 {{- end }}
