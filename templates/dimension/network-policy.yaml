@@ -1,0 +1,16 @@
+{{- if .Values.dimension.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "matrix.fullname" . }}-dimension
+  labels:
+{{ include "matrix.labels" . | indent 4 }}
+{{ include "matrix.dimension.labels" . | indent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "matrix.fullname" . }}-dimension
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  policyTypes:
+    - Ingress
+{{- end }}

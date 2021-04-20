@@ -1,0 +1,67 @@
+{{- if .Values.dimension.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "matrix.fullname" . }}-dimension
+  labels:
+{{ include "matrix.labels" . | indent 4 }}
+{{ include "matrix.dimension.labels" . | indent 4}}
+spec:
+  replicas: {{ .Values.dimension.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "matrix.name" . }}-dimension
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        # re-roll deployment on config change
+        checksum/dimension-config: {{ include (print $.Template.BasePath "/dimension/configmap.yaml") . | sha256sum }}
+      labels:
+        app.kubernetes.io/name: {{ include "matrix.name" . }}-dimension
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: "matrix-dimension"
+          image: "{{ .Values.dimension.image.repository }}:{{ .Values.dimension.image.tag }}"
+          imagePullPolicy: {{ .Values.dimension.image.pullPolicy }}
+          args:
+            - --config-path=/data/config.yaml
+            - serve
+          ports:
+            - name: http
+              containerPort: 8184
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /data
+              name: dimension-data
+            - mountPath: /data/config.yaml
+              name: dimension-config
+              subPath: config.yaml
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            {{- if .Values.dimension.probes.liveness }}
+            {{- toYaml .Values.dimension.probes.liveness | nindent 12 }}
+            {{- end }}
+          {{- with .Values.riot.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: dimension-data
+          persistentVolumeClaim:
+            claimName: {{ include "matrix.fullname" . }}-dimension-data
+        - name: dimension-config
+          configMap:
+            name: {{ include "matrix.fullname" . }}-dimension-config
+{{- end }}

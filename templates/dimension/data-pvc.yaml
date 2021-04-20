@@ -1,0 +1,18 @@
+{{- if .Values.dimension.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "matrix.fullname" . }}-dimension-data
+  labels:
+{{ include "matrix.labels" . | indent 4}}
+{{ include "matrix.dimension.labels" . | nindent 4}}
+spec:
+  {{- if .Values.dimension.data.storageClass }}
+  storageClassName: {{ .Values.dimension.data.storageClass }}
+  {{- end }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.dimension.data.capacity }}
+{{- end }}

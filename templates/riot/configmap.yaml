@@ -16,13 +16,13 @@ data:
       "brand": {{ .Values.riot.branding.brand | quote }},
       "branding": {
         {{- if .Values.riot.branding.welcomeBackgroundUrl }}
-        "welcomeBackgroundUrl": {{ .Values.riot.branding.welcomeBackgroundUrl | quote }},
+        "welcomeBackgroundUrl": {{ .Values.riot.branding.welcomeBackgroundUrl | quote }}{{- if .Values.riot.branding.authHeaderLogoUrl }},{{- end }}
         {{- end }}
         {{- if .Values.riot.branding.authHeaderLogoUrl }}
-        "authHeaderLogoUrl": {{ .Values.riot.branding.authHeaderLogoUrl | quote }},
+        "authHeaderLogoUrl": {{ .Values.riot.branding.authHeaderLogoUrl | quote }}{{- if .Values.riot.branding.authFooterLinks }},{{- end }}
         {{- end }}
         {{- if .Values.riot.branding.authFooterLinks }}
-        "authFooterLinks": {{ .Values.riot.branding.authFooterLinks | toJson }},
+        "authFooterLinks": {{ .Values.riot.branding.authFooterLinks | toJson }}
         {{- end }}
       },
       {{- if .Values.riot.integrations.enabled }}

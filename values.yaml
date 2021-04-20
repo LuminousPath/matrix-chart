@@ -222,6 +222,7 @@ ingress:
     synapse: matrix.chart-example.local
     riot: element.chart-example.local
     federation: matrix-fed.chart-example.local
+    dimension: dimension.chart-example.local
   annotations:
     # This annotation is required for the Nginx ingress provider. You can remove it if you use a different ingress provider
     nginx.ingress.kubernetes.io/configuration-snippet: |
@@ -312,13 +313,55 @@ registration:
   probes:
     liveness:
       timeoutSeconds: 5
-      periodSeconds: 10
+      periodSeconds: 30
   data:
     # Size of the PVC to allocate for the SQLite database
     capacity: 512Mi
     # Storage class (optional)
     storageClass: ""
-  apiPassword: 'APIAdminPassword'
+  apiPassword: 'APIAdminPassword' # to generate tokens via the web api
+
+dimension:
+  enabled: true
+  image:
+    repository: "turt2live/matrix-dimension"
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+  probes:
+    liveness:
+      timeoutSeconds: 5
+      periodSeconds: 10
+  data:
+    # Size of the PVC to allocate for the SQLite database
+    capacity: 10Gi
+    # Storage class (optional)
+    storageClass: ""
+  # These users can modify the integrations this Dimension supports.
+  # To access the admin interface, open Dimension in Element and click the settings icon.
+  admins:
+    - "@someone:domain.com"
+  # IPs and CIDR ranges listed here will be blocked from being widgets.
+  # Note: Widgets may still be embedded with restricted content, although not through Dimension directly.
+  widgetBlacklist:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+      - 127.0.0.0/8
+  # The access token Dimension should use for miscellaneous access to the homeserver, and
+  # for tracking custom sticker pack updates. This should be a user configured on the homeserver
+  # and be dedicated to Dimension (create a user named "dimension" on your homeserver). For
+  # information on how to acquire an access token, visit https://t2bot.io/docs/access_tokens
+  accessToken: "something"
+  # The URL that Dimension will redirect media requests to for downloading media such as
+  # stickers. If not supplied or left empty Dimension will use the clientServerUrl.
+  # ex: mediaUrl: "https://t2bot.io"
+  mediaUrl: {}
+  # Settings for interacting with Telegram. Currently only applies for importing
+  # sticker packs from Telegram.
+  botToken: {}
 
 # Synapse Kubernetes resource settings
 synapse:
@@ -428,7 +471,7 @@ riot:
   # Element Kubernetes resource settings
   image:
     repository: "vectorim/riot-web"
-    tag: v1.7.12
+    tag: v1.7.25
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP

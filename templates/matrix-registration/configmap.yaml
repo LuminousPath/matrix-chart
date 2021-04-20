@@ -5,6 +5,7 @@ metadata:
   name: {{ include "matrix.fullname" . }}-registration-config
   labels:
   {{ include "matrix.labels" . | nindent 4}}
+  {{ include "matrix.registration.labels" . | nindent 4}}
 data:
   config.yaml: |
     server_location: "https://{{ include "matrix.fullname" . }}-synapse:{{ .Values.synapse.service.port }}"

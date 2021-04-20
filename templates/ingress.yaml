@@ -101,6 +101,25 @@ spec:
               servicePort: {{ .Values.admin.service.port }}
               {{- end }}
     {{- end }}
+    {{- if .Values.dimension.enabled }}
+    - host: {{ .Values.ingress.hosts.dimension }}
+      http:
+        paths:
+          {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
+          - path: "/"
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: "{{ include "matrix.fullname" . }}-dimension"
+                port:
+                  number: {{ .Values.dimension.service.port }}
+              {{- else }}
+          - path: "/"
+            backend:
+              serviceName: "{{ include "matrix.fullname" . }}-dimension"
+              servicePort: {{ .Values.dimension.service.port }}
+              {{- end }}
+    {{- end }}
     {{- if .Values.registration.enabled }}
     - host: {{ .Values.ingress.hosts.riot }}
       http:
@@ -120,12 +139,23 @@ spec:
                 name: "{{ include "matrix.fullname" .}}-registration"
                 port:
                   number: {{ .Values.registration.service.port }}
+          - path: "/api/token"
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: "{{ include "matrix.fullname" .}}-registration"
+                port:
+                  number: {{ .Values.registration.service.port }}
          {{- else }}
           - path: "/register"
             backend:
               serviceName: "{{ include "matrix.fullname" .}}-registration"
               servicePort: {{ .Values.registration.service.port }}
           - path: "/static"
+            backend:
+              serviceName: "{{ include "matrix.fullname" .}}-registration"
+              servicePort: {{ .Values.registration.service.port }}
+          - path: "/api/token"
             backend:
               serviceName: "{{ include "matrix.fullname" .}}-registration"
               servicePort: {{ .Values.registration.service.port }}

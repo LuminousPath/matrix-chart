@@ -90,6 +90,15 @@ Matrix-Registration specific labels
 {{- end -}}
 
 {{/*
+Dimension Server specific labels
+*/}}
+{{- define "matrix.dimension.labels" -}}
+{{- range $key, $val := .Values.dimension.labels -}}
+{{ $key }}: {{ $val }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Synapse hostname, derived from either the Values.matrix.hostname override or the Ingress definition
 */}}
 {{- define "matrix.hostname" -}}
