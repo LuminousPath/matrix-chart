@@ -51,26 +51,6 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
-      initContainers:
-        - name: "load-config"
-          image: "{{ .Values.bridges.irc.image.repository }}:{{ .Values.bridges.irc.image.tag }}"
-          imagePullPolicy: {{ .Values.bridges.irc.image.pullPolicy }}
-          command: ["sh"]
-          args: ["-c", "cp /load/registration.yaml /data/appservice-registration-irc.yaml; cp /load/passkey.pem /data/passkey.pem; cp /load/config.yaml /data/config.yaml; cp /load/registration.yaml /bridges/irc.yaml"]
-          volumeMounts:
-            - name: data
-              mountPath: /data
-            - name: bridges
-              mountPath: /bridges
-            - name: config
-              mountPath: /load
-              readOnly: true
-          securityContext:
-            capabilities:
-              drop:
-                - ALL
-            readOnlyRootFilesystem: true
-            allowPrivilegeEscalation: false
       containers:
         - name: "bridge-irc"
           image: "{{ .Values.bridges.irc.image.repository }}:{{ .Values.bridges.irc.image.tag }}"
@@ -87,6 +67,18 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
+            - name: config
+              mountPath: /data/appservice-registration-irc.yaml
+              subPath: registration.yaml
+              readOnly: true
+            - name: config
+              mountPath: /data/passkey.pem
+              subPath: passkey.pem
+              readOnly: true
+            - name: config
+              mountPath: /data/config.yaml
+              subPath: config.yaml
+              readOnly: true
           securityContext:
             capabilities:
               drop:
@@ -104,7 +96,4 @@ spec:
         - name: config
           configMap:
             name: "{{ include "matrix.fullname" . }}-irc-config"
-        - name: bridges
-          persistentVolumeClaim:
-            claimName: "{{ include "matrix.fullname" . }}-bridges"
   {{- end }}

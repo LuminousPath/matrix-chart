@@ -51,44 +51,6 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
-      initContainers:
-        - name: "load-config"
-          image: "{{ .Values.bridges.whatsapp.image.repository }}:{{ .Values.bridges.whatsapp.image.tag }}"
-          imagePullPolicy: {{ .Values.bridges.whatsapp.image.pullPolicy }}
-          command: ["sh"]
-          args: ["-c", "cp /load/config.yaml /data/config.yaml"]
-          volumeMounts:
-            - name: data
-              mountPath: /data
-            - name: config
-              mountPath: /load
-              readOnly: true
-          securityContext:
-            capabilities:
-              drop:
-                - ALL
-            readOnlyRootFilesystem: true
-            allowPrivilegeEscalation: false
-        - name: "generate-config"
-          image: "{{ .Values.bridges.whatsapp.image.repository }}:{{ .Values.bridges.whatsapp.image.tag }}"
-          imagePullPolicy: {{ .Values.bridges.whatsapp.image.pullPolicy }}
-          command: ["mautrix-whatsapp"]
-          args: ["-g", "-c", "/data/config.yaml", "-r", "/bridges/whatsapp.yaml"]
-          volumeMounts:
-            - name: data
-              mountPath: /data
-            - name: bridges
-              mountPath: /bridges
-          securityContext:
-            capabilities:
-              drop:
-                - ALL
-            readOnlyRootFilesystem: true
-            allowPrivilegeEscalation: false
-          {{- with .Values.bridges.whatsapp.resources }}
-          resources:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
       containers:
         - name: "bridge-whatsapp"
           image: "{{ .Values.bridges.whatsapp.image.repository }}:{{ .Values.bridges.whatsapp.image.tag }}"
@@ -104,6 +66,10 @@ spec:
               mountPath: /data
             - name: tmp
               mountPath: /tmp
+            - name: config
+              mountPath: /data/config.yaml
+              subPath: config.yaml
+              readOnly: true
           securityContext:
             capabilities:
               drop:
@@ -121,9 +87,6 @@ spec:
         - name: config
           configMap:
             name: "{{ include "matrix.fullname" . }}-whatsapp-config"
-        - name: bridges
-          persistentVolumeClaim:
-            claimName: "{{ include "matrix.fullname" . }}-bridges"
         - name: tmp
           emptyDir: {}
 {{- end }}

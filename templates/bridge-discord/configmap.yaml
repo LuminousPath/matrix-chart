@@ -44,8 +44,6 @@ data:
       lineDateFormat: "MMM-D HH:mm:ss.SSS" # This is in moment.js format
       files: []
     database:
-      userStorePath: "/data/user-store.db"
-      roomStorePath: "/data/room-store.db"
       # You may either use SQLite or Postgresql for the bridge database, which contains
       # important mappings for events and user puppeting configurations.
       # Use the filename option for SQLite, or connString for Postgresql.
@@ -97,10 +95,10 @@ data:
     namespaces:
       users:
         - exclusive: true
-          regex: '^@_discord_.*'
+          regex: '@_discord_.*'
       aliases:
         - exclusive: true
-          regex: '^#_discord_.*'
+          regex: '#_discord_.*'
     url: "http://{{ include "matrix.fullname" . }}-bridge-discord:{{ .Values.bridges.discord.service.port }}"
     sender_localpart: _discord_bot
     rate_limited: false

@@ -178,4 +178,19 @@ data:
       # Minimum severity for log messages.
       # Options: debug, info, warn, error, fatal
       print_level: debug
+  registration.yaml: |
+    id: appservice-whatsapp
+    as_token: "{{ include "matrix.whatsapp.as_token" . }}"
+    hs_token: "{{ include "matrix.whatsapp.hs_token" . }}"
+    namespaces:
+      users:
+        - exclusive: true
+          regex: '@{{ .Values.bridges.whatsapp.users.username | replace "{{.}}" "[0-9]+" }}:{{ include "matrix.fullname" . }}'
+        - exclusive: true
+          regex: '@{{ .Values.bridges.whatsapp.bot.username }}:{{ include "matrix.fullname" . }}'  
+    url: "http://{{ include "matrix.fullname" . }}-bridge-whatsapp:{{ .Values.bridges.whatsapp.service.port }}"
+    sender_localpart: {{ .Values.bridges.whatsapp.bot.username }}
+    rate_limited: false
+    protocols:
+      - whatsapp
 {{- end }}

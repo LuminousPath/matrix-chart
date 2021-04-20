@@ -84,10 +84,20 @@ spec:
             - name: data
               mountPath: /data/media_store
               subPath: media_store
-            {{- if or .Values.bridges.whatsapp.enabled .Values.bridges.discord.enabled .Values.bridges.irc.enabled }}
-            - name: bridges
-              mountPath: /bridges
-              readOnly: true
+            {{- if .Values.bridges.discord.enabled }}
+            - name: bridge-discord-config
+              mountPath: /bridges/discord.yaml
+              subPath: registration.yaml
+            {{- end }}
+            {{- if .Values.bridges.irc.enabled }}
+            - name: bridge-irc-config
+              mountPath: /bridges/irc.yaml
+              subPath: registration.yaml
+            {{- end }}
+            {{- if .Values.bridges.whatsapp.enabled }}
+            - name: bridge-whatsapp-config
+              mountPath: /bridges/whatsapp.yaml
+              subPath: registration.yaml
             {{- end }}
             - name: uploads
               mountPath: /data/uploads
@@ -131,10 +141,20 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: {{ include "matrix.fullname" . }}-data
-        {{- if or .Values.bridges.whatsapp.enabled .Values.bridges.discord.enabled .Values.bridges.irc.enabled }}
-        - name: bridges
-          persistentVolumeClaim:
-            claimName: {{ include "matrix.fullname" . }}-bridges
+        {{- if .Values.bridges.discord.enabled }}
+        - name: bridge-discord-config
+          configMap:
+            name: {{ include "matrix.fullname" . }}-discord-config
+        {{- end }}
+        {{- if .Values.bridges.irc.enabled }}
+        - name: bridge-irc-config
+          configMap:
+            name: {{ include "matrix.fullname" . }}-irc-config
+        {{- end }}
+        {{- if .Values.bridges.whatsapp.enabled }}
+        - name: bridge-whatsapp-config
+          configMap:
+            name: {{ include "matrix.fullname" . }}-whatsapp-config
         {{- end }}
         # Ephemeral in-progress uploads
         - name: uploads
