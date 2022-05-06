@@ -367,7 +367,7 @@ dimension:
 synapse:
   image:
     repository: "matrixdotorg/synapse"
-    tag: v1.22.1
+    tag: v1.58.1
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -470,8 +470,8 @@ riot:
 
   # Element Kubernetes resource settings
   image:
-    repository: "vectorim/riot-web"
-    tag: v1.7.25
+    repository: "vectorim/element-web"
+    tag: v1.10.11
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -531,7 +531,7 @@ coturn:
 
   image:
     repository: "instrumentisto/coturn"
-    tag: "4.5.1.3"
+    tag: "4.5.2"
     pullPolicy: IfNotPresent
   replicaCount: 1
   resources: {}
@@ -547,7 +547,7 @@ admin:
   # Element Kubernetes resource settings
   image:
     repository: "awesometechnologies/synapse-admin"
-    tag: 0.7.2
+    tag: "0.8.5"
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -619,7 +619,7 @@ bridges:
 
     image:
       repository: "matrixdotorg/matrix-appservice-irc"
-      tag: "release-0.22.0-rc1"
+      tag: "release-0.34.0"
       pullPolicy: IfNotPresent
     replicaCount: 1
     resources: {}
@@ -704,7 +704,7 @@ bridges:
       storageClass: ""
 
     image:
-      repository: "dock.mau.dev/tulir/mautrix-whatsapp"
+      repository: "dock.mau.dev/mautrix/whatsapp"
       tag: "latest"
       pullPolicy: Always
     replicaCount: 1
